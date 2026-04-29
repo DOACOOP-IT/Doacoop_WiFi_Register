@@ -23,16 +23,15 @@
             height: 100vh; display: flex; align-items: center; justify-content: center; 
             margin: 0; padding: 10px; overflow: hidden; 
         }
-.input-error {
-    border-color: #ef4444 !important;
-    background: #fef2f2 !important;
-}
-
-.role-error {
-    border: 2px solid #ef4444;
-    border-radius: 1rem;
-    padding: 4px;
-}
+        .input-error {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+        }
+        .role-error {
+            border: 2px solid #ef4444;
+            border-radius: 1rem;
+            padding: 4px;
+        }
         .login-card {
             background: var(--card-bg); width: 100%; max-width: 400px;
             padding: 1.5rem; border-radius: 1.5rem;
@@ -98,7 +97,7 @@
 
             <div class="form-group">
                 <label>หมายเลขโทรศัพท์ (10 หลัก)</label>
-                <input type="tel" name="phone" id="phone" inputmode="numeric" maxlength="10" placeholder="0XXXXXXXXX" required>
+                <input type="tel" name="phone" id="phone" inputmode="numeric" maxlength="12" placeholder="0XX-XXX-XXXX" required>
             </div>
 
             <div class="form-group">
@@ -134,159 +133,163 @@
     </div>
 
     <script>
-const params = new URLSearchParams(window.location.search);
-document.getElementById('mac').value = params.get('mac') || "ไม่พบข้อมูลอุปกรณ์";
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('mac').value = params.get('mac') || "ไม่พบข้อมูลอุปกรณ์";
 
-const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-// =====================
-// ✅ helper error UI
-// =====================
-function showError(el, msg){
-    document.querySelectorAll('.input-error').forEach(e=>e.classList.remove('input-error'));
-    document.querySelectorAll('.role-error').forEach(e=>e.classList.remove('role-error'));
+    // =====================
+    // ✅ Helper แสดง Error ด้วย SweetAlert2 (Popup)
+    // =====================
+    function showError(el, msg){
+        document.querySelectorAll('.input-error').forEach(e=>e.classList.remove('input-error'));
+        document.querySelectorAll('.role-error').forEach(e=>e.classList.remove('role-error'));
 
-    if(el.classList) el.classList.add('input-error');
+        if(el.classList) el.classList.add('input-error');
 
-    el.scrollIntoView({behavior:'smooth', block:'center'});
-    setTimeout(()=>el.focus(),300);
-
-    Swal.fire({
-        icon:'warning',
-        title:msg,
-        confirmButtonColor:'#2563eb'
-    });
-}
-
-// =====================
-// ✅ clear error เมื่อพิมพ์
-// =====================
-function clearErrorOnInput(el){
-    el.addEventListener('input',()=> el.classList.remove('input-error'));
-    el.addEventListener('change',()=> el.classList.remove('input-error'));
-}
-
-const fullName = document.getElementById('fullName');
-const phoneInput = document.getElementById('phone');
-const consent = document.getElementById('consent');
-const roleGrid = document.querySelector('.role-grid');
-
-clearErrorOnInput(fullName);
-clearErrorOnInput(phoneInput);
-clearErrorOnInput(consent);
-
-document.querySelectorAll('input[name="role"]').forEach(r=>{
-    r.addEventListener('change',()=>{
-        roleGrid.classList.remove('role-error');
-    });
-});
-
-// =====================
-// ✅ กรองชื่อภาษาไทย
-// =====================
-fullName.addEventListener('input', function() {
-    this.value = this.value.replace(/[^ก-๙\s]/g, '');
-});
-
-// =====================
-// ✅ format เบอร์ + cursor ไม่กระโดด
-// =====================
-phoneInput.addEventListener('input', function (e) {
-
-    // กัน event แปลกจากมือถือ
-    if (e.inputType === 'deleteContentBackward') return;
-
-    let input = this;
-
-    let digits = input.value.replace(/\D/g, '').slice(0, 10);
-
-    let formatted = '';
-    if (digits.length > 6) {
-        formatted = digits.replace(/(\d{3})(\d{3})(\d+)/, '$1-$2-$3');
-    } else if (digits.length > 3) {
-        formatted = digits.replace(/(\d{3})(\d+)/, '$1-$2');
-    } else {
-        formatted = digits;
-    }
-
-    // 👉 ไม่ต้อง set cursor = ปลอดภัยสุด
-    input.value = formatted;
-});
-// =====================
-// ✅ submit validation ทีละช่อง
-// =====================
-document.getElementById('regForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const role = document.querySelector('input[name="role"]:checked');
-
-    // ชื่อ
-    if(!fullName.value.trim()){
-        showError(fullName,'กรุณากรอกชื่อ-นามสกุล');
-        return;
-    }
-
-    // เบอร์
-    if(!phoneInput.value.trim()){
-        showError(phoneInput,'กรุณากรอกเบอร์โทร');
-        return;
-    }
-
-    const rawPhone = phoneInput.value.replace(/\D/g, '');
-
-    if(!/^[0-9]{10}$/.test(rawPhone)){
-        showError(phoneInput,'เบอร์ต้องเป็นตัวเลข 10 หลัก');
-        return;
-    }
-
-    // role
-    if(!role){
-        roleGrid.classList.add('role-error');
-        roleGrid.scrollIntoView({behavior:'smooth', block:'center'});
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=>el.focus(),300);
 
         Swal.fire({
-            icon:'warning',
-            title:'กรุณาเลือกสถานะ',
-            confirmButtonColor:'#2563eb'
+            icon: 'warning',
+            title: 'ข้อผิดพลาด!',
+            text: msg,
+            confirmButtonColor: '#2563eb',
+            confirmButtonText: 'ตกลง'
         });
-        return;
-    }
-
-    // consent
-    if(!consent.checked){
-        showError(consent,'กรุณายอมรับเงื่อนไข');
-        return;
     }
 
     // =====================
-    // ✅ submit
+    // ✅ Clear error เมื่อพิมพ์แก้ไข
     // =====================
-    Swal.fire({ 
-        title: 'กำลังบันทึกข้อมูล...', 
-        allowOutsideClick: false, 
-        showConfirmButton: false,
-        didOpen: () => { Swal.showLoading(); } 
+    function clearErrorOnInput(el){
+        el.addEventListener('input',()=> el.classList.remove('input-error'));
+        el.addEventListener('change',()=> el.classList.remove('input-error'));
+    }
+
+    const fullName = document.getElementById('fullName');
+    const phoneInput = document.getElementById('phone');
+    const consent = document.getElementById('consent');
+    const roleGrid = document.querySelector('.role-grid');
+
+    clearErrorOnInput(fullName);
+    clearErrorOnInput(phoneInput);
+    clearErrorOnInput(consent);
+
+    document.querySelectorAll('input[name="role"]').forEach(r=>{
+        r.addEventListener('change',()=>{
+            roleGrid.classList.remove('role-error');
+        });
     });
 
-    fetch(scriptURL, { method: 'POST', body: new FormData(this), mode: 'no-cors' })
-    .then(() => {
+    // =====================
+    // ✅ กรองให้พิมพ์ได้เฉพาะชื่อภาษาไทย
+    // =====================
+    fullName.addEventListener('input', function() {
+        this.value = this.value.replace(/[^ก-๙\s]/g, '');
+    });
+
+    // =====================
+    // ✅ Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ
+    // =====================
+    phoneInput.addEventListener('input', function (e) {
+        // กัน event แปลกจากมือถือเวลาลบ
+        if (e.inputType === 'deleteContentBackward') return;
+
+        let input = this;
+        let digits = input.value.replace(/\D/g, '').slice(0, 10);
+
+        let formatted = '';
+        if (digits.length > 6) {
+            formatted = digits.replace(/(\d{3})(\d{3})(\d+)/, '$1-$2-$3');
+        } else if (digits.length > 3) {
+            formatted = digits.replace(/(\d{3})(\d+)/, '$1-$2');
+        } else {
+            formatted = digits;
+        }
+
+        input.value = formatted;
+    });
+
+    // =====================
+    // ✅ ตรวจสอบข้อมูลตอนกดปุ่มยืนยันลงทะเบียน
+    // =====================
+    document.getElementById('regForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const role = document.querySelector('input[name="role"]:checked');
+
+        // เช็คชื่อ
+        if(!fullName.value.trim()){
+            showError(fullName, 'กรุณากรอกชื่อ-นามสกุล');
+            return;
+        }
+
+        // เช็คเบอร์โทร
+        if(!phoneInput.value.trim()){
+            showError(phoneInput, 'กรุณากรอกหมายเลขโทรศัพท์');
+            return;
+        }
+
+        const rawPhone = phoneInput.value.replace(/\D/g, '');
+
+        if(!/^[0-9]{10}$/.test(rawPhone)){
+            showError(phoneInput, 'หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก');
+            return;
+        }
+
+        // เช็คสถานะ
+        if(!role){
+            roleGrid.classList.add('role-error');
+            roleGrid.scrollIntoView({behavior:'smooth', block:'center'});
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรุณาเลือกสถานะ',
+                text: 'โปรดระบุสถานะของคุณก่อนดำเนินการต่อ',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'ตกลง'
+            });
+            return;
+        }
+
+        // เช็คการยอมรับเงื่อนไข
+        if(!consent.checked){
+            showError(consent, 'กรุณายอมรับเงื่อนไขก่อนลงทะเบียน');
+            return;
+        }
+
+        // =====================
+        // ✅ ทำการส่งข้อมูล (Submit)
+        // =====================
         Swal.fire({ 
-            icon: 'success', 
-            title: 'ลงทะเบียนสำเร็จ', 
-            text: 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 
-            confirmButtonColor: '#2563eb' 
+            title: 'กำลังบันทึกข้อมูล...', 
+            allowOutsideClick: false, 
+            showConfirmButton: false,
+            didOpen: () => { Swal.showLoading(); } 
         });
-        this.reset();
-    })
-    .catch(() => {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'เกิดข้อผิดพลาด', 
-            text: 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้', 
-            confirmButtonColor: '#2563eb' 
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(this), mode: 'no-cors' })
+        .then(() => {
+            Swal.fire({ 
+                icon: 'success', 
+                title: 'ลงทะเบียนสำเร็จ', 
+                text: 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'ตกลง'
+            });
+            this.reset();
+        })
+        .catch(() => {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'เกิดข้อผิดพลาด', 
+                text: 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง', 
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'ตกลง'
+            });
         });
     });
-});
-</script>
+    </script>
 </body>
 </html>
