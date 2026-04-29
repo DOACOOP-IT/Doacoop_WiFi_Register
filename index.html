@@ -139,7 +139,7 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
     // =====================
-    // ✅ Helper แสดง Error ด้วย SweetAlert2 (Popup)
+    // ✅ Helper แสดง Error ด้วย SweetAlert2
     // =====================
     function showError(el, msg){
         document.querySelectorAll('.input-error').forEach(e=>e.classList.remove('input-error'));
@@ -159,9 +159,6 @@
         });
     }
 
-    // =====================
-    // ✅ Clear error เมื่อพิมพ์แก้ไข
-    // =====================
     function clearErrorOnInput(el){
         el.addEventListener('input',()=> el.classList.remove('input-error'));
         el.addEventListener('change',()=> el.classList.remove('input-error'));
@@ -182,18 +179,13 @@
         });
     });
 
-    // =====================
-    // ✅ กรองให้พิมพ์ได้เฉพาะชื่อภาษาไทย
-    // =====================
+    // กรองให้พิมพ์ได้เฉพาะชื่อภาษาไทย
     fullName.addEventListener('input', function() {
         this.value = this.value.replace(/[^ก-๙\s]/g, '');
     });
 
-    // =====================
-    // ✅ Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ
-    // =====================
+    // Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ (เฉพาะการแสดงผล)
     phoneInput.addEventListener('input', function (e) {
-        // กัน event แปลกจากมือถือเวลาลบ
         if (e.inputType === 'deleteContentBackward') return;
 
         let input = this;
@@ -219,13 +211,11 @@
 
         const role = document.querySelector('input[name="role"]:checked');
 
-        // เช็คชื่อ
         if(!fullName.value.trim()){
             showError(fullName, 'กรุณากรอกชื่อ-นามสกุล');
             return;
         }
 
-        // เช็คเบอร์โทร
         if(!phoneInput.value.trim()){
             showError(phoneInput, 'กรุณากรอกหมายเลขโทรศัพท์');
             return;
@@ -238,7 +228,6 @@
             return;
         }
 
-        // เช็คสถานะ
         if(!role){
             roleGrid.classList.add('role-error');
             roleGrid.scrollIntoView({behavior:'smooth', block:'center'});
@@ -253,15 +242,21 @@
             return;
         }
 
-        // เช็คการยอมรับเงื่อนไข
         if(!consent.checked){
             showError(consent, 'กรุณายอมรับเงื่อนไขก่อนลงทะเบียน');
             return;
         }
 
         // =====================
-        // ✅ ทำการส่งข้อมูล (Submit)
+        // ✅ จัดการรูปแบบข้อมูลก่อนส่ง (Submit)
         // =====================
+        
+        // 1. นำข้อมูลจากฟอร์มทั้งหมดมาเก็บใน FormData
+        const formData = new FormData(this);
+        
+        // 2. แทนที่ค่า phone ด้วยค่าเบอร์โทรที่ตัดขีดออกและเติม ' ไว้ข้างหน้า (เช่น '0958493535)
+        formData.set('phone', "'" + rawPhone);
+
         Swal.fire({ 
             title: 'กำลังบันทึกข้อมูล...', 
             allowOutsideClick: false, 
@@ -269,7 +264,8 @@
             didOpen: () => { Swal.showLoading(); } 
         });
 
-        fetch(scriptURL, { method: 'POST', body: new FormData(this), mode: 'no-cors' })
+        // 3. ส่งข้อมูล formData ที่ปรับปรุงแล้ว
+        fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
         .then(() => {
             Swal.fire({ 
                 icon: 'success', 
