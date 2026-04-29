@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WiFi Registration | สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.5/sweetalert2.all.min.js"></script>
+    
     <style>
         * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
         :root {
@@ -133,14 +135,24 @@
     </div>
 
     <script>
+    // ✅ โค้ดสำรอง (Fallback) ป้องกัน Error กรณีโหลด SweetAlert2 ไม่ผ่าน
+    if (typeof Swal === 'undefined') {
+        window.Swal = {
+            fire: function(options) {
+                if (options.title === 'กำลังบันทึกข้อมูล...') return Promise.resolve(); // ข้ามไปถ้าเป็นแค่ loading
+                let msg = (options.title ? options.title + '\n' : '') + (options.text ? options.text : '');
+                alert(msg);
+                return Promise.resolve({ isConfirmed: true });
+            },
+            showLoading: function() {}
+        };
+    }
+
     const params = new URLSearchParams(window.location.search);
     document.getElementById('mac').value = params.get('mac') || "ไม่พบข้อมูลอุปกรณ์";
 
     const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-    // =====================
-    // ✅ Helper แสดง Error ด้วย SweetAlert2
-    // =====================
     function showError(el, msg){
         document.querySelectorAll('.input-error').forEach(e=>e.classList.remove('input-error'));
         document.querySelectorAll('.role-error').forEach(e=>e.classList.remove('role-error'));
@@ -184,7 +196,7 @@
         this.value = this.value.replace(/[^ก-๙\s]/g, '');
     });
 
-    // Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ (เฉพาะการแสดงผล)
+    // Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ
     phoneInput.addEventListener('input', function (e) {
         if (e.inputType === 'deleteContentBackward') return;
 
@@ -203,9 +215,7 @@
         input.value = formatted;
     });
 
-    // =====================
-    // ✅ ตรวจสอบข้อมูลตอนกดปุ่มยืนยันลงทะเบียน
-    // =====================
+    // ตรวจสอบข้อมูลตอนกดปุ่มยืนยันลงทะเบียน
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -247,24 +257,20 @@
             return;
         }
 
-        // =====================
-        // ✅ จัดการรูปแบบข้อมูลก่อนส่ง (Submit)
-        // =====================
-        
-        // 1. นำข้อมูลจากฟอร์มทั้งหมดมาเก็บใน FormData
+        // เตรียมข้อมูลก่อนส่ง (Submit)
         const formData = new FormData(this);
-        
-        // 2. แทนที่ค่า phone ด้วยค่าเบอร์โทรที่ตัดขีดออกและเติม ' ไว้ข้างหน้า (เช่น '0958493535)
-        formData.set('phone', "'" + rawPhone);
+        formData.set('phone', "'" + rawPhone); // บันทึกลง Sheet ในรูปแบบ '0958493535
 
         Swal.fire({ 
             title: 'กำลังบันทึกข้อมูล...', 
             allowOutsideClick: false, 
             showConfirmButton: false,
-            didOpen: () => { Swal.showLoading(); } 
+            didOpen: () => { 
+                if (typeof Swal.showLoading === 'function') Swal.showLoading(); 
+            } 
         });
 
-        // 3. ส่งข้อมูล formData ที่ปรับปรุงแล้ว
+        // ส่งข้อมูลเข้า Google Sheets
         fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
         .then(() => {
             Swal.fire({ 
