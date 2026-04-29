@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WiFi Registration | สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* บังคับใช้ Kanit ทุกส่วนประกอบ */
-        * { font-family: 'Kanit', sans-serif !important; box-sizing: border-box; }
+        /* บังคับใช้ Sarabun ทุกส่วนประกอบ */
+        * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
         
         :root {
             --primary: #2563eb;
@@ -43,11 +43,11 @@
         .logo-section img { width: 70px; height: auto; border-radius: 1rem; }
         
         .header-text { text-align: center; margin-bottom: 1rem; }
-        .header-text h1 { color: var(--primary); font-size: 1.25rem; font-weight: 600; margin: 0; }
+        .header-text h1 { color: var(--primary); font-size: 1.25rem; font-weight: 700; margin: 0; }
         .header-text p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
 
         .form-group { margin-bottom: 0.7rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-main); margin-bottom: 0.3rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem; }
         
         input {
             width: 100%; padding: 0.65rem 1rem; background: var(--input-bg);
@@ -65,13 +65,13 @@
             background: #fff; cursor: pointer; transition: all 0.2s ease;
         }
         .role-card label span.icon { font-size: 1.25rem; margin-bottom: 2px; }
-        .role-card label span.text { font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
+        .role-card label span.text { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
         
         .role-card input:checked + label {
             border-color: var(--primary); background-color: #eff6ff;
             transform: translateY(-2px); box-shadow: 0 4px 8px rgba(37, 99, 235, 0.1);
         }
-        .role-card input:checked + label span.text { color: var(--primary); font-weight: 600; }
+        .role-card input:checked + label span.text { color: var(--primary); font-weight: 700; }
 
         .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 0.8rem 0; cursor: pointer; }
         .checkbox-group input { width: 16px; height: 16px; margin: 2px 0 0 0; accent-color: var(--primary); cursor: pointer; }
@@ -79,7 +79,7 @@
 
         .btn-submit {
             width: 100%; background: var(--primary); color: white; padding: 0.85rem;
-            border: none; border-radius: 0.8rem; font-size: 1rem; font-weight: 500;
+            border: none; border-radius: 0.8rem; font-size: 1rem; font-weight: 600;
             cursor: pointer; transition: 0.2s;
         }
         .btn-submit:hover { background: var(--primary-hover); }
@@ -98,7 +98,7 @@
         <form id="regForm">
             <div class="form-group">
                 <label>ชื่อ-นามสกุล (ภาษาไทย)</label>
-                <input type="text" name="fullName" id="fullName" maxlength="50" placeholder="ชื่อ และ นามสกุล" required>
+                <input type="text" name="fullName" id="fullName" maxlength="50" placeholder="ระบุชื่อและนามสกุล" required>
             </div>
 
             <div class="form-group">
@@ -144,12 +144,12 @@
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-        // กรองภาษาไทย
+        // กรองภาษาไทยและเว้นวรรคเท่านั้น
         document.getElementById('fullName').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^ก-๙\s]/g, '');
         });
 
-        // กรองตัวเลข
+        // กรองตัวเลขเท่านั้น
         document.getElementById('phone').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
