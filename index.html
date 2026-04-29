@@ -89,7 +89,7 @@
             <img src="https://lh3.googleusercontent.com/d/1kKnX_mNnoqCIqJnamzFBYKSmNUT6D6j5" alt="Logo">
         </div>
         <div class="header-text">
-            <h1>ลงทะเบียน Wi-Fi</h1>
+            <h1>ระบบลงทะเบียนขอใช้ Wi-Fi</h1>
             <p>สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</p>
         </div>
 
@@ -101,7 +101,7 @@
 
             <div class="form-group">
                 <label>หมายเลขโทรศัพท์ (10 หลัก)</label>
-                <input type="tel" name="phone" id="phone" inputmode="numeric" maxlength="10" placeholder="0XXXXXXXXX" required>
+                <input type="text" name="phone" id="phone" inputmode="decimal" maxlength="10" placeholder="0XXXXXXXXX" required>
             </div>
 
             <div class="form-group">
@@ -142,13 +142,13 @@
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-        // ตรวจสอบภาษาไทย
-        document.getElementById('fullName').addEventListener('input', function(e) {
+        // กรองเฉพาะภาษาไทย
+        document.getElementById('fullName').addEventListener('input', function() {
             this.value = this.value.replace(/[^ก-๙\s]/g, '');
         });
 
-        // ตรวจสอบตัวเลข (แก้จุดที่ทำให้กรอกไม่ได้)
-        document.getElementById('phone').addEventListener('input', function(e) {
+        // กรองเฉพาะตัวเลข (แก้ไขให้กรอกได้ลื่นไหลขึ้น)
+        document.getElementById('phone').addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
 
@@ -159,8 +159,8 @@
             if (phone.length !== 10) {
                 Swal.fire({ 
                     icon: 'warning', 
-                    title: 'ข้อมูลไม่ถูกต้อง', 
-                    text: 'กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก',
+                    title: 'เบอร์โทรไม่ครบ', 
+                    text: 'กรุณากรอกหมายเลขโทรศัพท์ให้ครบ 10 หลัก',
                     confirmButtonColor: '#2563eb'
                 });
                 return;
@@ -187,7 +187,7 @@
                 Swal.fire({ 
                     icon: 'error', 
                     title: 'เกิดข้อผิดพลาด', 
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ในขณะนี้', 
+                    text: 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้', 
                     confirmButtonColor: '#2563eb' 
                 });
             });
