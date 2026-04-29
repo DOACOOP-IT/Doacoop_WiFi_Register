@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* บังคับใช้ Sarabun ทุกส่วนประกอบ */
+        /* บังคับใช้ Sarabun ทุกส่วน */
         * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
         
         :root {
@@ -23,8 +23,7 @@
 
         body {
             background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-            height: 100vh; 
-            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; display: flex; align-items: center; justify-content: center; 
             margin: 0; padding: 10px; overflow: hidden; 
         }
 
@@ -33,8 +32,7 @@
             padding: 1.5rem; border-radius: 1.5rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             animation: fadeInUp 0.5s ease-out;
-            max-height: 98vh;
-            display: flex; flex-direction: column;
+            max-height: 98vh; display: flex; flex-direction: column;
         }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -74,7 +72,7 @@
         .role-card input:checked + label span.text { color: var(--primary); font-weight: 700; }
 
         .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 0.8rem 0; cursor: pointer; }
-        .checkbox-group input { width: 16px; height: 16px; margin: 2px 0 0 0; accent-color: var(--primary); cursor: pointer; }
+        .checkbox-group input { width: 16px; height: 16px; margin: 2px 0 0 0; accent-color: var(--primary); }
         .checkbox-group span { font-size: 0.75rem; color: var(--text-main); line-height: 1.3; text-align: left; }
 
         .btn-submit {
@@ -103,7 +101,7 @@
 
             <div class="form-group">
                 <label>หมายเลขโทรศัพท์ (10 หลัก)</label>
-                <input type="text" name="phone" id="phone" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="0XXXXXXXXX" required>
+                <input type="tel" name="phone" id="phone" inputmode="numeric" maxlength="10" placeholder="0XXXXXXXXX" required>
             </div>
 
             <div class="form-group">
@@ -144,12 +142,12 @@
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-        // กรองภาษาไทยและเว้นวรรคเท่านั้น
+        // ตรวจสอบภาษาไทย
         document.getElementById('fullName').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^ก-๙\s]/g, '');
         });
 
-        // กรองตัวเลขเท่านั้น
+        // ตรวจสอบตัวเลข (แก้จุดที่ทำให้กรอกไม่ได้)
         document.getElementById('phone').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
@@ -159,12 +157,17 @@
             
             const phone = document.getElementById('phone').value;
             if (phone.length !== 10) {
-                Swal.fire({ icon: 'warning', title: 'เบอร์โทรไม่ถูกต้อง', text: 'กรุณากรอกให้ครบ 10 หลัก', confirmButtonColor: '#2563eb' });
+                Swal.fire({ 
+                    icon: 'warning', 
+                    title: 'ข้อมูลไม่ถูกต้อง', 
+                    text: 'กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก',
+                    confirmButtonColor: '#2563eb'
+                });
                 return;
             }
 
             Swal.fire({ 
-                title: 'กำลังส่งข้อมูล...', 
+                title: 'กำลังบันทึกข้อมูล...', 
                 allowOutsideClick: false, 
                 showConfirmButton: false,
                 didOpen: () => { Swal.showLoading(); } 
@@ -184,7 +187,7 @@
                 Swal.fire({ 
                     icon: 'error', 
                     title: 'เกิดข้อผิดพลาด', 
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง', 
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ในขณะนี้', 
                     confirmButtonColor: '#2563eb' 
                 });
             });
