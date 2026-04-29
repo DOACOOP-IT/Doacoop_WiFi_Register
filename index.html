@@ -7,9 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* บังคับใช้ Sarabun ทุกส่วน */
         * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
-        
         :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
@@ -20,13 +18,11 @@
             --text-muted: #64748b;
             --input-bg: #f1f5f9;
         }
-
         body {
             background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             height: 100vh; display: flex; align-items: center; justify-content: center; 
             margin: 0; padding: 10px; overflow: hidden; 
         }
-
         .login-card {
             background: var(--card-bg); width: 100%; max-width: 400px;
             padding: 1.5rem; border-radius: 1.5rem;
@@ -34,19 +30,14 @@
             animation: fadeInUp 0.5s ease-out;
             max-height: 98vh; display: flex; flex-direction: column;
         }
-
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         .logo-section { text-align: center; margin-bottom: 0.5rem; }
         .logo-section img { width: 70px; height: auto; border-radius: 1rem; }
-        
         .header-text { text-align: center; margin-bottom: 1rem; }
         .header-text h1 { color: var(--primary); font-size: 1.25rem; font-weight: 700; margin: 0; }
         .header-text p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
-
         .form-group { margin-bottom: 0.7rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem; }
-        
         input {
             width: 100%; padding: 0.65rem 1rem; background: var(--input-bg);
             border: 2px solid transparent; border-radius: 0.75rem; font-size: 0.95rem;
@@ -54,7 +45,6 @@
         }
         input:focus { outline: none; border-color: var(--primary); background: #fff; }
         input[readonly] { background: #e2e8f0; color: #94a3b8; border: none; }
-
         .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .role-card input { display: none; }
         .role-card label {
@@ -64,17 +54,14 @@
         }
         .role-card label span.icon { font-size: 1.25rem; margin-bottom: 2px; }
         .role-card label span.text { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
-        
         .role-card input:checked + label {
             border-color: var(--primary); background-color: #eff6ff;
             transform: translateY(-2px); box-shadow: 0 4px 8px rgba(37, 99, 235, 0.1);
         }
         .role-card input:checked + label span.text { color: var(--primary); font-weight: 700; }
-
         .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 0.8rem 0; cursor: pointer; }
         .checkbox-group input { width: 16px; height: 16px; margin: 2px 0 0 0; accent-color: var(--primary); }
         .checkbox-group span { font-size: 0.75rem; color: var(--text-main); line-height: 1.3; text-align: left; }
-
         .btn-submit {
             width: 100%; background: var(--primary); color: white; padding: 0.85rem;
             border: none; border-radius: 0.8rem; font-size: 1rem; font-weight: 600;
@@ -89,7 +76,7 @@
             <img src="https://lh3.googleusercontent.com/d/1kKnX_mNnoqCIqJnamzFBYKSmNUT6D6j5" alt="Logo">
         </div>
         <div class="header-text">
-            <h1>ระบบลงทะเบียนขอใช้ Wi-Fi</h1>
+            <h1>ระบบลงทะเบียน Wi-Fi</h1>
             <p>สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</p>
         </div>
 
@@ -101,7 +88,7 @@
 
             <div class="form-group">
                 <label>หมายเลขโทรศัพท์ (10 หลัก)</label>
-                <input type="text" name="phone" id="phone" inputmode="decimal" maxlength="10" placeholder="0XXXXXXXXX" required>
+                <input type="tel" name="phone" id="phone" inputmode="numeric" maxlength="10" placeholder="0XXXXXXXXX" required>
             </div>
 
             <div class="form-group">
@@ -142,20 +129,21 @@
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-        // กรองเฉพาะภาษาไทย
+        // ปรับปรุง Logic การกรองชื่อภาษาไทย
         document.getElementById('fullName').addEventListener('input', function() {
             this.value = this.value.replace(/[^ก-๙\s]/g, '');
         });
 
-        // กรองเฉพาะตัวเลข (แก้ไขให้กรอกได้ลื่นไหลขึ้น)
-        document.getElementById('phone').addEventListener('input', function() {
+        // ปรับปรุง Logic การกรองเบอร์โทร (ใช้ event 'keypress' เสริมเพื่อให้กรอกลื่นไหล)
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
 
         document.getElementById('regForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const phone = document.getElementById('phone').value;
+            const phone = phoneInput.value;
             if (phone.length !== 10) {
                 Swal.fire({ 
                     icon: 'warning', 
