@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WiFi Registration | สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * { font-family: 'Sarabun', sans-serif !important; box-sizing: border-box; }
         :root {
@@ -22,16 +23,21 @@
             height: 100vh; display: flex; align-items: center; justify-content: center; 
             margin: 0; padding: 10px; overflow: hidden; 
         }
-        
-        /* สไตล์ฟอร์มลงทะเบียน */
-        .input-error { border-color: #ef4444 !important; background: #fef2f2 !important; }
-        .role-error { border: 2px solid #ef4444; border-radius: 1rem; padding: 4px; }
+        .input-error {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+        }
+        .role-error {
+            border: 2px solid #ef4444;
+            border-radius: 1rem;
+            padding: 4px;
+        }
         .login-card {
             background: var(--card-bg); width: 100%; max-width: 400px;
             padding: 1.5rem; border-radius: 1.5rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             animation: fadeInUp 0.5s ease-out;
-            max-height: 98vh; display: flex; flex-direction: column; overflow-y: auto;
+            max-height: 98vh; display: flex; flex-direction: column;
         }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .logo-section { text-align: center; margin-bottom: 0.5rem; }
@@ -41,7 +47,7 @@
         .header-text p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
         .form-group { margin-bottom: 0.7rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem; }
-        input[type="text"], input[type="tel"] {
+        input {
             width: 100%; padding: 0.65rem 1rem; background: var(--input-bg);
             border: 2px solid transparent; border-radius: 0.75rem; font-size: 0.95rem;
             transition: all 0.2s; color: var(--text-main);
@@ -71,46 +77,19 @@
             cursor: pointer; transition: 0.2s;
         }
         .btn-submit:hover { background: var(--primary-hover); }
-
-        /* ========================================= */
-        /* Custom Popup Styles (ดึงมาจากหน้า Login)  */
-        /* ========================================= */
-        #customAlert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .alert-box { background: white; width: 85%; max-width: 320px; border-radius: 24px; padding: 32px 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.15); animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .alert-icon { width: 64px; height: 64px; border: 3px solid #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #ef4444; font-size: 32px; font-weight: bold; transition: 0.3s;}
-        .alert-title { color: var(--text-main); font-size: 20px; font-weight: 700; margin: 0 0 12px; }
-        .alert-text { color: var(--text-muted); font-size: 15px; margin: 0 0 24px; line-height: 1.6; white-space: pre-line; }
-        .alert-btn { background: var(--primary); color: white; border: none; padding: 14px 30px; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; }
-        .alert-btn:hover { background: var(--primary-hover); }
-        
-        /* เพิ่ม Animation ให้หมุนตอนโหลด */
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .spin-icon { animation: spin 1s linear infinite; border-top-color: transparent !important; }
     </style>
 </head>
 <body>
-
-    <div id="customAlert">
-        <div class="alert-box">
-            <div class="alert-icon" id="alertIcon">!</div>
-            <h3 class="alert-title" id="alertTitle">แจ้งเตือน</h3>
-            <p class="alert-text" id="alertMessage">ข้อความ</p>
-            <button class="alert-btn" id="alertBtn" onclick="closeAlert()">ตกลง</button>
-        </div>
-    </div>
-
     <div class="login-card">
         <div class="logo-section">
-            <!-- เปลี่ยนจาก src="logo.png" เป็นลิงก์ GDrive -->
-<img src="https://lh3.googleusercontent.com/d/1kKnX_mNnoqCIqJnamzFBYKSmNUT6D6j5" alt="Logo" onerror="this.src='https://via.placeholder.com/70'">
+            <img src="https://lh3.googleusercontent.com/d/1kKnX_mNnoqCIqJnamzFBYKSmNUT6D6j5" alt="Logo">
         </div>
         <div class="header-text">
             <h1>ระบบลงทะเบียน Wi-Fi</h1>
             <p>สหกรณ์ออมทรัพย์กรมวิชาการเกษตร จำกัด</p>
         </div>
 
-        <form id="regForm" novalidate>
+        <form id="regForm">
             <div class="form-group">
                 <label>ชื่อ-นามสกุล (ภาษาไทย)</label>
                 <input type="text" name="fullName" id="fullName" maxlength="50" placeholder="ระบุชื่อและนามสกุล" required>
@@ -148,8 +127,10 @@
                 <input type="checkbox" id="consent" required>
                 <span>ข้าพเจ้ายินยอมปฏิบัติตามนโยบายความปลอดภัยไซเบอร์</span>
             </label>
-            <!-- ซ่อนช่องนี้ไว้เพื่อส่งข้อมูลอุปกรณ์ -->
+            
+            <!-- ซ่อนช่องนี้ไว้เพื่อส่งข้อมูลอุปกรณ์ (iPhone, Android, PC) -->
             <input type="hidden" name="deviceType" id="deviceType">
+
             <button type="submit" class="btn-submit" id="btnSubmit">ยืนยันลงทะเบียน</button>
         </form>
     </div>
@@ -160,63 +141,33 @@
 
     const scriptURL = 'https://script.google.com/macros/s/AKfycbziQ_3o6WyTnMgP3n84zzUm2kYRfF9HvM4xBiJQkspVdWgDKbQtj9MkHpqnOnWk6io_/exec';
 
-    // ==========================================
-    // ✅ ระบบ Popup แจ้งเตือนแบบสร้างเอง
-    // ==========================================
-    function showAlert(titleText, msgText, type = 'error') {
-        const icon = document.getElementById('alertIcon');
-        const title = document.getElementById('alertTitle');
-        const msg = document.getElementById('alertMessage');
-        const btn = document.getElementById('alertBtn');
-        const alertBox = document.getElementById('customAlert');
-
-        title.innerText = titleText;
-        msg.innerText = msgText;
-        icon.classList.remove('spin-icon'); // เคลียร์แอนิเมชันหมุน
-
-        if (type === 'success') {
-            icon.innerText = '✓';
-            icon.style.borderColor = '#10b981';
-            icon.style.color = '#10b981';
-            btn.style.display = 'block'; 
-        } else if (type === 'loading') {
-            icon.innerText = '';
-            icon.style.borderColor = '#3b82f6';
-            icon.style.color = '#3b82f6';
-            icon.classList.add('spin-icon'); // ใส่แอนิเมชันให้หมุนติ้วๆ
-            btn.style.display = 'none'; // ซ่อนปุ่มตกลงตอนกำลังโหลด
-        } else { // warning, error
-            icon.innerText = '!';
-            icon.style.borderColor = '#ef4444';
-            icon.style.color = '#ef4444';
-            btn.style.display = 'block'; 
-        }
-
-        alertBox.style.display = 'flex';
-    }
-
-    function closeAlert() {
-        document.getElementById('customAlert').style.display = 'none';
-    }
-
-    // ฟังก์ชันช่วยแสดง Error ตรงช่องกรอก
-    function showInputError(el, title, msg){
+    // =====================
+    // ✅ helper error UI
+    // =====================
+    function showError(el, msg){
         document.querySelectorAll('.input-error').forEach(e=>e.classList.remove('input-error'));
         document.querySelectorAll('.role-error').forEach(e=>e.classList.remove('role-error'));
 
         if(el.classList) el.classList.add('input-error');
+
         el.scrollIntoView({behavior:'smooth', block:'center'});
         setTimeout(()=>el.focus(),300);
 
-        showAlert(title, msg, 'warning');
+        Swal.fire({
+            icon:'warning',
+            title:msg,
+            confirmButtonColor:'#2563eb'
+        });
     }
 
+    // =====================
+    // ✅ clear error เมื่อพิมพ์
+    // =====================
     function clearErrorOnInput(el){
         el.addEventListener('input',()=> el.classList.remove('input-error'));
         el.addEventListener('change',()=> el.classList.remove('input-error'));
     }
 
-    // ผูก Event
     const fullName = document.getElementById('fullName');
     const phoneInput = document.getElementById('phone');
     const consent = document.getElementById('consent');
@@ -232,87 +183,137 @@
         });
     });
 
-    // กรองให้พิมพ์ได้เฉพาะชื่อภาษาไทย
+    // =====================
+    // ✅ กรองชื่อภาษาไทย
+    // =====================
     fullName.addEventListener('input', function() {
         this.value = this.value.replace(/[^ก-๙\s]/g, '');
     });
 
-    // Format เบอร์โทรศัพท์ เติมขีดให้อัตโนมัติ
+    // =====================
+    // ✅ format เบอร์ + cursor ไม่กระโดด
+    // =====================
     phoneInput.addEventListener('input', function (e) {
         if (e.inputType === 'deleteContentBackward') return;
+
         let input = this;
         let digits = input.value.replace(/\D/g, '').slice(0, 10);
         let formatted = '';
-        if (digits.length > 6) { formatted = digits.replace(/(\d{3})(\d{3})(\d+)/, '$1-$2-$3'); } 
-        else if (digits.length > 3) { formatted = digits.replace(/(\d{3})(\d+)/, '$1-$2'); } 
-        else { formatted = digits; }
+
+        if (digits.length > 6) {
+            formatted = digits.replace(/(\d{3})(\d{3})(\d+)/, '$1-$2-$3');
+        } else if (digits.length > 3) {
+            formatted = digits.replace(/(\d{3})(\d+)/, '$1-$2');
+        } else {
+            formatted = digits;
+        }
+
         input.value = formatted;
     });
-// ฟังก์ชันตรวจสอบชนิดของอุปกรณ์
-        function getDeviceType() {
-            const ua = navigator.userAgent;
-            if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return "iPhone/iPad";
-            if (/android/i.test(ua)) return "Android";
-            if (/Macintosh/i.test(ua)) return "Mac";
-            if (/Windows/i.test(ua)) return "Windows PC";
-            return "ไม่ทราบอุปกรณ์";
-        }
-        
-        // จับค่าใส่ในช่อง Hidden ทันทีที่โหลดหน้าเว็บ
-        document.getElementById('deviceType').value = getDeviceType();
-    // ตรวจสอบข้อมูลตอนกดปุ่มยืนยันลงทะเบียน
+
+    // =====================
+    // ✅ ตรวจสอบชนิดอุปกรณ์
+    // =====================
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return "iPhone/iPad";
+        if (/android/i.test(ua)) return "Android";
+        if (/Macintosh/i.test(ua)) return "Mac";
+        if (/Windows/i.test(ua)) return "Windows PC";
+        return "ไม่ทราบอุปกรณ์";
+    }
+    document.getElementById('deviceType').value = getDeviceType();
+
+    // =====================
+    // ✅ submit validation ทีละช่อง
+    // =====================
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
         const role = document.querySelector('input[name="role"]:checked');
 
+        // ชื่อ
         if(!fullName.value.trim()){
-            showInputError(fullName, 'ข้อผิดพลาด', 'กรุณากรอกชื่อ-นามสกุล');
+            showError(fullName,'กรุณากรอกชื่อ-นามสกุล');
             return;
         }
 
+        // เบอร์
         if(!phoneInput.value.trim()){
-            showInputError(phoneInput, 'ข้อผิดพลาด', 'กรุณากรอกหมายเลขโทรศัพท์');
+            showError(phoneInput,'กรุณากรอกเบอร์โทร');
             return;
         }
 
         const rawPhone = phoneInput.value.replace(/\D/g, '');
+
         if(!/^[0-9]{10}$/.test(rawPhone)){
-            showInputError(phoneInput, 'ข้อผิดพลาด', 'หมายเลขโทรศัพท์ต้องเป็นตัวเลข 10 หลัก');
+            showError(phoneInput,'เบอร์ต้องเป็นตัวเลข 10 หลัก');
             return;
         }
 
+        // role
         if(!role){
             roleGrid.classList.add('role-error');
             roleGrid.scrollIntoView({behavior:'smooth', block:'center'});
-            showAlert('กรุณาเลือกสถานะ', 'โปรดระบุสถานะของคุณก่อนดำเนินการต่อ', 'warning');
+
+            Swal.fire({
+                icon:'warning',
+                title:'กรุณาเลือกสถานะ',
+                confirmButtonColor:'#2563eb'
+            });
             return;
         }
 
+        // consent
         if(!consent.checked){
-            showInputError(consent, 'ข้อผิดพลาด', 'กรุณายอมรับเงื่อนไขก่อนลงทะเบียน');
+            showError(consent,'กรุณายอมรับเงื่อนไข');
             return;
         }
 
-        // เตรียมข้อมูลก่อนส่ง (Submit)
+        // =====================
+        // ✅ submit & Duplicate Check
+        // =====================
+        Swal.fire({ 
+            title: 'กำลังตรวจสอบข้อมูล...', 
+            allowOutsideClick: false, 
+            showConfirmButton: false,
+            didOpen: () => { Swal.showLoading(); } 
+        });
+
+        // เตรียมข้อมูลก่อนส่ง
         const formData = new FormData(this);
-        formData.set('phone', "'" + rawPhone); // บันทึกลง Sheet ในรูปแบบ '0958493535
+        formData.set('phone', "'" + rawPhone); // ลบขีดออก และใส่ ' นำหน้าเพื่อให้ส่งเป็น 0812345678 แบบสมบูรณ์
 
-        // แสดง Popup Loading
-        showAlert('กำลังบันทึกข้อมูล...', 'โปรดรอสักครู่', 'loading');
-
-        // ส่งข้อมูลเข้า Google Sheets
-        fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
-        .then(() => {
-            // สำเร็จแล้วเปลี่ยน Popup เป็น Success
-            showAlert('ลงทะเบียนสำเร็จ', 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 'success');
-            
-            // รีเซ็ตฟอร์ม (ถ้าต้องการให้ฟอร์มว่างหลังจากส่งเสร็จ)
-            document.getElementById('regForm').reset();
+        // สังเกต: เราจะไม่ใส่ mode: 'no-cors' เพื่อให้สามารถอ่านคำว่า Duplicate หรือ Success จาก Google Script ได้
+        fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => response.text()) // แปลงผลลัพธ์เป็นข้อความ
+        .then(result => {
+            if (result === 'Duplicate') {
+                Swal.fire({ 
+                    icon: 'warning', 
+                    title: 'ข้อมูลซ้ำในระบบ', 
+                    text: 'อุปกรณ์นี้เคยลงทะเบียนไว้แล้ว ไม่จำเป็นต้องลงทะเบียนใหม่', 
+                    confirmButtonColor: '#2563eb' 
+                });
+            } else if (result === 'Success') {
+                Swal.fire({ 
+                    icon: 'success', 
+                    title: 'ลงทะเบียนสำเร็จ', 
+                    text: 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 
+                    confirmButtonColor: '#2563eb' 
+                });
+                document.getElementById('regForm').reset();
+            } else {
+                throw new Error('Unknown response');
+            }
         })
         .catch(() => {
-            // เกิดข้อผิดพลาด
-            showAlert('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง', 'error');
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'เกิดข้อผิดพลาด', 
+                text: 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้', 
+                confirmButtonColor: '#2563eb' 
+            });
         });
     });
     </script>
