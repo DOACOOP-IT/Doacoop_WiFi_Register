@@ -247,7 +247,18 @@
         else { formatted = digits; }
         input.value = formatted;
     });
-
+// ฟังก์ชันตรวจสอบชนิดของอุปกรณ์
+        function getDeviceType() {
+            const ua = navigator.userAgent;
+            if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return "iPhone/iPad";
+            if (/android/i.test(ua)) return "Android";
+            if (/Macintosh/i.test(ua)) return "Mac";
+            if (/Windows/i.test(ua)) return "Windows PC";
+            return "ไม่ทราบอุปกรณ์";
+        }
+        
+        // จับค่าใส่ในช่อง Hidden ทันทีที่โหลดหน้าเว็บ
+        document.getElementById('deviceType').value = getDeviceType();
     // ตรวจสอบข้อมูลตอนกดปุ่มยืนยันลงทะเบียน
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
