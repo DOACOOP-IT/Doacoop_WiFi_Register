@@ -170,7 +170,7 @@
 
         title.innerText = titleText;
         msg.innerText = msgText;
-        icon.classList.remove('spin-icon'); // เคลียร์แอนิเมชันหมุน
+        icon.classList.remove('spin-icon'); 
 
         if (type === 'success') {
             icon.innerText = '✓';
@@ -181,8 +181,13 @@
             icon.innerText = '';
             icon.style.borderColor = '#3b82f6';
             icon.style.color = '#3b82f6';
-            icon.classList.add('spin-icon'); // หมุนติ้วๆ
-            btn.style.display = 'none'; // ซ่อนปุ่มตกลงตอนโหลด
+            icon.classList.add('spin-icon'); 
+            btn.style.display = 'none'; 
+        } else if (type === 'info') {
+            icon.innerText = 'i';
+            icon.style.borderColor = '#f59e0b'; // สีส้มอำพันสำหรับแจ้งสถานะรออนุมัติ
+            icon.style.color = '#f59e0b';
+            btn.style.display = 'block'; 
         } else { // warning, error
             icon.innerText = '!';
             icon.style.borderColor = '#ef4444';
@@ -209,8 +214,7 @@
         el.scrollIntoView({behavior:'smooth', block:'center'});
         setTimeout(()=>el.focus(),300);
 
-        // ใช้ Custom Alert แทน SweetAlert
-        showAlert('ข้อผิดพลาด', msg, 'warning');
+        showAlert('ข้อผิดพลาด', msg, 'error');
     }
 
     // =====================
@@ -276,7 +280,7 @@
     document.getElementById('deviceType').value = getDeviceType();
 
     // =====================
-    // ✅ submit validation ทีละช่อง
+    // ✅ submit validation
     // =====================
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -303,7 +307,7 @@
         if(!role){
             roleGrid.classList.add('role-error');
             roleGrid.scrollIntoView({behavior:'smooth', block:'center'});
-            showAlert('กรุณาเลือกสถานะ', 'โปรดระบุสถานะของคุณก่อนดำเนินการต่อ', 'warning');
+            showAlert('กรุณาเลือกสถานะ', 'โปรดระบุสถานะของคุณก่อนดำเนินการต่อ', 'error');
             return;
         }
 
@@ -313,27 +317,33 @@
         }
 
         // =====================
-        // ✅ submit & Duplicate Check
+        // ✅ ส่งข้อมูล & ตรวจสอบการซ้ำ
         // =====================
         
-        // 1. โชว์ Popup Loading หมุนๆ
         showAlert('กำลังตรวจสอบข้อมูล...', 'โปรดรอสักครู่', 'loading');
 
         const formData = new FormData(this);
-        formData.set('phone', rawPhone); // ลบขีดออกเพื่อให้ Script ฝั่ง Google รับเป็นตัวเลขล้วน
+        formData.set('phone', rawPhone); 
 
-        // 2. ส่งข้อมูลไปที่ GAS
         fetch(scriptURL, { method: 'POST', body: formData })
         .then(response => response.text())
         .then(result => {
             const finalResult = result.trim();
             
-            if (finalResult === 'Duplicate') {
-                showAlert('ข้อมูลซ้ำในระบบ', 'อุปกรณ์เคยลงทะเบียนไว้แล้ว', 'warning');
-            } else if (finalResult === 'Success') {
-                showAlert('ลงทะเบียนสำเร็จ', 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 'success');
+            if (finalResult === 'Duplicate_Pending') {
+                // เช็คเจอซ้ำ แต่สถานะยังไม่ได้รับอนุมัติ
+                showAlert('รอการอนุมัติ', 'อุปกรณ์นี้อยู่ระหว่างรอเจ้าหน้าที่อนุมัติใช้งาน\nกรุณารอสักครู่', 'info');
+            } 
+            else if (finalResult === 'Duplicate_Success') {
+                // เช็คเจอซ้ำ และสถานะอนุมัติไปแล้ว
+                showAlert('ข้อมูลซ้ำในระบบ', 'อุปกรณ์นี้เคยลงทะเบียนไปแล้ว\nหากใช้งานไม่ได้ โปรดติดต่อเจ้าหน้าที่สารสนเทศ 02-9405088 ต่อ 245', 'error');
+            } 
+            else if (finalResult === 'Success') {
+                // ข้อมูลใหม่ บันทึกสำเร็จ
+                showAlert('ลงทะเบียนสำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้ว\nกรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 'success');
                 document.getElementById('regForm').reset();
-            } else {
+            } 
+            else {
                 showAlert('เกิดข้อผิดพลาด', 'ระบบตอบกลับไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง', 'error');
             }
         })
