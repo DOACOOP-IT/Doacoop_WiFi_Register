@@ -329,7 +329,7 @@
             const finalResult = result.trim();
             
             if (finalResult === 'Duplicate') {
-                showAlert('ข้อมูลซ้ำในระบบ', 'อุปกรณ์หรือเบอร์โทรศัพท์นี้\nเคยลงทะเบียนไว้แล้ว', 'warning');
+                showAlert('ข้อมูลซ้ำในระบบ', 'อุปกรณ์เคยลงทะเบียนไว้แล้ว', 'warning');
             } else if (finalResult === 'Success') {
                 showAlert('ลงทะเบียนสำเร็จ', 'กรุณารอเจ้าหน้าที่อนุมัติการใช้งาน', 'success');
                 document.getElementById('regForm').reset();
